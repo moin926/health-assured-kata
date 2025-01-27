@@ -18,10 +18,9 @@ public class PricingEngine
         foreach (var item in items)
         {
             var rule = _pricingRules.FirstOrDefault(r => r.AppliesTo(item.Key));
+
             if (rule != null)
-            {
                 total += rule.CalculatePrice(item.Value);
-            }
         }
 
         return total;

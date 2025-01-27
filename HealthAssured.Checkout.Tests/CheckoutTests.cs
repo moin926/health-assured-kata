@@ -59,7 +59,7 @@ public class CheckoutTests
     }
 
     [Test]
-    public void GetTotalPrice_ShouldHandleMultipleSpecialOffersAndSKUs()
+    public void GetTotalPrice_ShouldHandleMultipleSpecialOffersAndSkus()
     {
         _checkout.Scan("A");
         _checkout.Scan("A");
