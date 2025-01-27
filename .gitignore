@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/HealthAssured.Checkout/bin
+/HealthAssured.Checkout/obj
+/HealthAssured.Checkout.Tests/bin
+/HealthAssured.Checkout.Tests/obj
+/.vs
