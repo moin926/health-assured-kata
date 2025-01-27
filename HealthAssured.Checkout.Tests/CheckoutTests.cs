@@ -2,11 +2,6 @@ namespace HealthAssured.Checkout.Tests;
 
 public class CheckoutTests
 {
-    [SetUp]
-    public void Setup()
-    {
-    }
-
     [Test]
     public void Scan_ShouldThrowException_ForUnknownSKU()
     {
@@ -17,8 +12,52 @@ public class CheckoutTests
         };
         var checkout = new Checkout(pricingRules);
 
-        // Assert
-        Assert.Throws<ArgumentException>(() => checkout.Scan("Z"));
+        // Act
+        TestDelegate act = () => checkout.Scan("Z");
 
+        // Assert
+        Assert.Throws<ArgumentException>(act);
+    }
+
+    [Test]
+    public void GetTotalPrice_ShouldReturnCorrectPrice_WithoutSpecialOffers()
+    {
+        // Arrange
+        var pricingRules = new List<PricingRule>
+        {
+            new PricingRule { SKU = "A", UnitPrice = 50 },
+            new PricingRule { SKU = "B", UnitPrice = 30 }
+        };
+        var checkout = new Checkout(pricingRules);
+
+        checkout.Scan("A");
+        checkout.Scan("B");
+
+        // Act
+        var total = checkout.GetTotalPrice();
+
+        // Assert
+        Assert.That(total, Is.EqualTo(80D));
+    }
+
+    [Test]
+    public void GetTotalPrice_ShouldApplySpecialOffer_WhenConditionsMet()
+    {
+        // Arrange
+        var pricingRules = new List<PricingRule>
+        {
+            new PricingRule { SKU = "A", UnitPrice = 50, SpecialQuantity = 3, SpecialPrice = 130 },
+        };
+        var checkout = new Checkout(pricingRules);
+
+        checkout.Scan("A");
+        checkout.Scan("A");
+        checkout.Scan("A");
+
+        // Act
+        var total = checkout.GetTotalPrice();
+
+        // Assert
+        Assert.That(total, Is.EqualTo(130D));
     }
 }

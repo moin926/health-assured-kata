@@ -11,14 +11,36 @@ public class Checkout : ICheckout
         _items = new Dictionary<string, int>();
     }
 
-    public int GetTotalPrice()
-    {
-        throw new NotImplementedException();
-    }
-
     public void Scan(string item)
     {
         if (!_pricingRules.ContainsKey(item))
             throw new ArgumentException($"Unknown SKU: {item}");
+
+        if (_items.ContainsKey(item))
+            _items[item]++;
+        else
+            _items[item] = 1;
+    }
+
+    public decimal GetTotalPrice()
+    {
+        decimal total = 0;
+
+        foreach (var item in _items)
+        {
+            var sku = item.Key;
+            var quantity = item.Value;
+            var rule = _pricingRules[sku];
+
+            if (rule.SpecialQuantity.HasValue && rule.SpecialPrice.HasValue)
+            {
+                total += (quantity / rule.SpecialQuantity.Value) * rule.SpecialPrice.Value;
+                total += (quantity % rule.SpecialQuantity.Value) * rule.UnitPrice;
+            }
+            else
+                total += quantity * rule.UnitPrice;
+        }
+
+        return total;
     }
 }
