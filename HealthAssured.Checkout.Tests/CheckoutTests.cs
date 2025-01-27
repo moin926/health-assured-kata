@@ -18,7 +18,8 @@ public class CheckoutTests
             new StandardPricingRule("D", 15)
         };
 
-        _checkout = new Checkout(pricingRules);
+        var pricingEngine = new PricingEngine(pricingRules);
+        _checkout = new Checkout(pricingEngine);
     }
 
     [Test]
