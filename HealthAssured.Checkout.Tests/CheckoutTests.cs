@@ -26,7 +26,7 @@ public class CheckoutTests
     public void Scan_ShouldThrowException_ForUnknownSku()
     {
         Assert.Throws<ArgumentException>(() => _checkout.Scan("Z"), "Unknown SKU: Z");
-    }FieldAccessException=
+    }
 
     [Test]
     public void GetTotalPrice_ShouldReturnCorrectPrice_WithoutSpecialOffers()
