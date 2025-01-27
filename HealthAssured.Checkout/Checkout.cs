@@ -3,7 +3,7 @@
 public class Checkout : ICheckout
 {
     private readonly PricingEngine _pricingEngine;
-    private readonly Dictionary<string, int> _items;
+    private readonly Dictionary<string, int> _items; // SKU, Qty
 
     public Checkout(PricingEngine pricingEngine)
     {
