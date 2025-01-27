@@ -8,8 +8,17 @@ public class CheckoutTests
     }
 
     [Test]
-    public void Test1()
+    public void Scan_ShouldThrowException_ForUnknownSKU()
     {
-        Assert.Pass();
+        // Arrange
+        var pricingRules = new List<PricingRule>
+        {
+            new PricingRule { SKU = "A", UnitPrice = 50 }
+        };
+        var checkout = new Checkout(pricingRules);
+
+        // Assert
+        Assert.Throws<ArgumentException>(() => checkout.Scan("Z"));
+
     }
 }
