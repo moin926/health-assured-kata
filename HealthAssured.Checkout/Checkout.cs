@@ -2,18 +2,18 @@
 
 public class Checkout : ICheckout
 {
-    private readonly Dictionary<string, PricingRule> _pricingRules;
+    private readonly List<IPricingRule> _pricingRules;
     private readonly Dictionary<string, int> _items;
 
-    public Checkout(IEnumerable<PricingRule> pricingRules)
+    public Checkout(IEnumerable<IPricingRule> pricingRules)
     {
-        _pricingRules = pricingRules.ToDictionary(r => r.SKU, r => r);
+        _pricingRules = pricingRules.ToList();
         _items = new Dictionary<string, int>();
     }
 
     public void Scan(string item)
     {
-        if (!_pricingRules.ContainsKey(item))
+        if (!_pricingRules.Any(rule => rule.AppliesTo(item)))
             throw new ArgumentException($"Unknown SKU: {item}");
 
         if (_items.ContainsKey(item))
@@ -28,17 +28,11 @@ public class Checkout : ICheckout
 
         foreach (var item in _items)
         {
-            var sku = item.Key;
-            var quantity = item.Value;
-            var rule = _pricingRules[sku];
-
-            if (rule.SpecialQuantity.HasValue && rule.SpecialPrice.HasValue)
+            var rule = _pricingRules.FirstOrDefault(r => r.AppliesTo(item.Key));
+            if (rule != null)
             {
-                total += (quantity / rule.SpecialQuantity.Value) * rule.SpecialPrice.Value;
-                total += (quantity % rule.SpecialQuantity.Value) * rule.UnitPrice;
+                total += rule.CalculatePrice(item.Value);
             }
-            else
-                total += quantity * rule.UnitPrice;
         }
 
         return total;
